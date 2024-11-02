@@ -30,4 +30,4 @@ manager_id INTEGER,
 FOREIGN KEY(role_id)
 REFERENCES role (id)
 ON DELETE SET NULL
-);
+); 
