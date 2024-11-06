@@ -24,9 +24,13 @@ function startCli() {
       if (choices === 'View all roles') {
         viewAllRoles().then(({ rows }) => console.table(rows)).then(()=>startCli())
       }
+      if (choices === 'View all employees') {
+        viewAllEmployees().then(({ rows }) => console.table(rows)).then(()=>startCli())
+      }
       if (choices === 'Add department') {
         addDepartment().then(({ rows }) => console.table(rows)).then(()=>startCli())
       }
+   
     })
 }
 
@@ -43,6 +47,14 @@ async function viewAllRoles() {
     return await client.query('select * FROM role')
   } finally { client.release() }
 }
+
+async function viewAllEmployees() {
+  const client = await pool.connect()
+  try {
+    return await client.query('select * FROM employee')
+  } finally { client.release() }
+}
+
 async function addDepartment() {
 const answer = await inquirer.prompt([{
   name: 'department_name',

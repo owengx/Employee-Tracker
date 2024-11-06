@@ -1,8 +1,7 @@
 import inquirer from 'inquirer';
-// import {queryResult} from 'pg';
-// import Employee from './employee.js'
 import { pool, connectToDb } from './connection.js';
 await connectToDb();
+//worked with tutor to add additions to inquirer prompt
 function startCli() {
     inquirer
         .prompt([
@@ -19,6 +18,9 @@ function startCli() {
         }
         if (choices === 'View all roles') {
             viewAllRoles().then(({ rows }) => console.table(rows)).then(() => startCli());
+        }
+        if (choices === 'View all employees') {
+            viewAllEmployees().then(({ rows }) => console.table(rows)).then(() => startCli());
         }
         if (choices === 'Add department') {
             addDepartment().then(({ rows }) => console.table(rows)).then(() => startCli());
@@ -38,6 +40,15 @@ async function viewAllRoles() {
     const client = await pool.connect();
     try {
         return await client.query('select * FROM role');
+    }
+    finally {
+        client.release();
+    }
+}
+async function viewAllEmployees() {
+    const client = await pool.connect();
+    try {
+        return await client.query('select * FROM employee');
     }
     finally {
         client.release();
