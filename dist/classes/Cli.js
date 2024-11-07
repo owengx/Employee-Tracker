@@ -9,7 +9,7 @@ function startCli() {
             message: 'What would you like to do?',
             type: 'list',
             name: 'select',
-            choices: ['View all departments', 'Add department', 'View all roles', 'Add Role', 'View all employees', 'Add employee']
+            choices: ['View all departments', 'Add department', 'View all roles', 'Add role', 'View all employees', 'Add employee']
         }
     ]).then((answers) => {
         const choices = answers.select;
@@ -24,6 +24,9 @@ function startCli() {
         }
         if (choices === 'Add department') {
             addDepartment().then(({ rows }) => console.table(rows)).then(() => startCli());
+        }
+        if (choices === 'Add employee') {
+            addEmployee().then(({ rows }) => console.table(rows)).then(() => startCli());
         }
     });
 }
@@ -63,6 +66,20 @@ async function addDepartment() {
     const client = await pool.connect();
     try {
         return await client.query('INSERT INTO department (department_name) VALUES ($1)', [answer.department_name]);
+    }
+    finally {
+        client.release();
+    }
+}
+async function addEmployee() {
+    const answer = await inquirer.prompt([{
+            name: 'first_name',
+            message: 'Enter the first name',
+            type: "input"
+        }]);
+    const client = await pool.connect();
+    try {
+        return await client.query('INSERT INTO employee (first_name) VALUES ($1)', [answer.first_name]);
     }
     finally {
         client.release();
