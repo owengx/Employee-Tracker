@@ -76,10 +76,21 @@ async function addEmployee() {
             name: 'first_name',
             message: 'Enter the first name',
             type: "input"
-        }]);
+        },
+        {
+            name: 'last_name',
+            message: 'Enter last name',
+            type: 'input'
+        },
+        {
+            name: 'role_id',
+            message: 'Enter role id',
+            type: 'input'
+        }
+    ]);
     const client = await pool.connect();
     try {
-        return await client.query('INSERT INTO employee (first_name) VALUES ($1)', [answer.first_name]);
+        return await client.query('INSERT INTO employee (first_name, last_name, role_id) VALUES ($1,$2,$3)', [answer.first_name][answer.last_name][answer.role_id]);
     }
     finally {
         client.release();

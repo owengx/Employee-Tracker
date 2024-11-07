@@ -19,21 +19,21 @@ function startCli() {
     ]).then((answers) => {
       const choices = answers.select
       if (choices === 'View all departments') {
-        viewAllDepartments().then(({ rows }) => console.table(rows)).then(()=>startCli())
+        viewAllDepartments().then(({ rows }) => console.table(rows)).then(() => startCli())
       }
       if (choices === 'View all roles') {
-        viewAllRoles().then(({ rows }) => console.table(rows)).then(()=>startCli())
+        viewAllRoles().then(({ rows }) => console.table(rows)).then(() => startCli())
       }
       if (choices === 'View all employees') {
-        viewAllEmployees().then(({ rows }) => console.table(rows)).then(()=>startCli())
+        viewAllEmployees().then(({ rows }) => console.table(rows)).then(() => startCli())
       }
       if (choices === 'Add department') {
-        addDepartment().then(({ rows }) => console.table(rows)).then(()=>startCli())
+        addDepartment().then(({ rows }) => console.table(rows)).then(() => startCli())
       }
       if (choices === 'Add employee') {
-        addEmployee().then(({ rows }) => console.table(rows)).then(()=>startCli())
+        addEmployee().then(({ rows }) => console.table(rows)).then(() => startCli())
       }
-   
+
     })
 }
 
@@ -59,15 +59,15 @@ async function viewAllEmployees() {
 }
 
 async function addDepartment() {
-const answer = await inquirer.prompt([{
-  name: 'department_name',
-  message: 'What is the new department name',
-  type: "input"
-}])
-  
+  const answer = await inquirer.prompt([{
+    name: 'department_name',
+    message: 'What is the new department name',
+    type: "input"
+  }])
+
   const client = await pool.connect()
   try {
-    return await client.query('INSERT INTO department (department_name) VALUES ($1)',[answer.department_name])
+    return await client.query('INSERT INTO department (department_name) VALUES ($1)', [answer.department_name])
   } finally { client.release() }
 }
 
@@ -76,15 +76,26 @@ async function addEmployee() {
     name: 'first_name',
     message: 'Enter the first name',
     type: "input"
-  }])
-    
-    const client = await pool.connect()
-    try {
-      return await client.query('INSERT INTO employee (first_name) VALUES ($1)',[answer.first_name])
-    } finally { client.release() }
+  },
+  {
+    name: 'last_name',
+    message: 'Enter last name',
+    type: 'input'
+  },
+  {
+    name: 'role_id',
+    message: 'Enter role id',
+    type: 'input'
   }
+  ])
+
+  const client = await pool.connect()
+  try {
+    return await client.query('INSERT INTO employee (first_name, last_name) VALUES ($1,$2,$3)', [answer.first_name] [answer.last_name] )
+  } finally { client.release() }
+}
 
 
- 
+
 
 startCli()
