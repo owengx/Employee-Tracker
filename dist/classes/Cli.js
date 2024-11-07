@@ -28,6 +28,9 @@ function startCli() {
         if (choices === 'Add employee') {
             addEmployee().then(({ rows }) => console.table(rows)).then(() => startCli());
         }
+        if (choices === 'Add role') {
+            addRole().then(({ rows }) => console.table(rows)).then(() => startCli());
+        }
     });
 }
 async function viewAllDepartments() {
@@ -82,15 +85,35 @@ async function addEmployee() {
             message: 'Enter last name',
             type: 'input'
         },
-        {
-            name: 'role_id',
-            message: 'Enter role id',
-            type: 'input'
-        }
+        // {
+        //   name: 'role_id',
+        //   message: 'Enter role id',
+        //   type: 'input'
+        // }
     ]);
     const client = await pool.connect();
     try {
-        return await client.query('INSERT INTO employee (first_name, last_name, role_id) VALUES ($1,$2,$3)', [answer.first_name][answer.last_name][answer.role_id]);
+        return await client.query('INSERT INTO employee (first_name, last_name) VALUES ($1,$2)', [answer.first_name][answer.last_name]);
+    }
+    finally {
+        client.release();
+    }
+}
+async function addRole() {
+    const answer = await inquirer.prompt([{
+            name: 'title',
+            message: 'Enter the title',
+            type: "input"
+        },
+        {
+            name: 'salary',
+            message: 'Enter the employee salary',
+            type: 'input'
+        },
+    ]);
+    const client = await pool.connect();
+    try {
+        return await client.query('INSERT INTO role (title, salary) VALUES ($1,$2)', [answer.title][answer.salary]);
     }
     finally {
         client.release();
